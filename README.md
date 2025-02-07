@@ -2,24 +2,25 @@
 
 Data insights from the booking request api to make better decisions.
 
-## Execution/Testing
-The main is in the folder `cmd/insights` and you  you can run it with the makefile helping funciton:
-/* TODO: Envs passed in */
+## Execution
+The main is in the folder `cmd/insights` and you can run it with the makefile target `run`
+/* TODO: Pass Envs */
 ```sh
 make run 
 ```
 
-### Testing 
+## Testing 
 
-For running the tests you can use 
+For running the tests you can use the target `test`
 
 /* TODO: differentiate amd implement unit, integration, e2e */
 ```sh
 make test
 ```
 
-### Develop/Extras
-ANd there is more functions that can be used for developing, i.e `make fmt` , you can see them with the 
+## Building/Developing/Extras
+In the makefile are included more targets to help thew devlopemtn, such as: `image`, `buil`, `fmt`
+You can see all the targets with: 
 command:
 ```sh
 make help
