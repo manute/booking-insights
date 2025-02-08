@@ -3,7 +3,7 @@
 FROM golang:alpine AS build
 
 # Set the working directory
-WORKDIR /insights
+WORKDIR /booking-insights
 
 # Copy and download dependencies
 COPY go.mod  ./
@@ -13,17 +13,17 @@ RUN go mod download
 COPY . .
 
 # Build the Go application
-RUN CGO_ENABLED=0 GOOS=linux go build -o appbin booking-req-insights/cmd/insights
+RUN CGO_ENABLED=0 GOOS=linux go build -o http-server-api /booking-insights/cmd/http
 
 # ##############################################################################
 # # Release Stage ##############################################################
 FROM alpine:edge
 
 # Set the working directory
-WORKDIR /insights
+WORKDIR /booking-insights
 
 # Copy the binary from the build stage and the .env file
-COPY --from=build /insights/appbin .
+COPY --from=build /booking-insights .
 
 # TODO: pass the envs
 # COPY --from=build /insights/.env
@@ -32,6 +32,6 @@ COPY --from=build /insights/appbin .
 RUN apk --no-cache add ca-certificates tzdata
 
 # Set the entrypoint command
-ENTRYPOINT ["/app/myapp"]
+ENTRYPOINT ["/booking-insights/http-server-api"]
 
 

@@ -1,5 +1,5 @@
 SHELL := bash # we want bash behaviour in all shell invocations
-
+ 
 # COLORS
 BOLD := \033[1m
 NORMAL := \033[0m
@@ -26,9 +26,9 @@ test: # run all tests.
 # ------------------------------------------------------------------------------
 # running 
 # ------------------------------------------------------------------------------
-.PHONY: run
-run: # execution of cmd/insights/main.go .
-	TIMEOUT=1m go run cmd/insights/main.go
+.PHONY: serve
+serve: # execution of cmd/insights/main.go .
+	TIMEOUT=1m go run cmd/http/main.go
 
 
 # ------------------------------------------------------------------------------
@@ -36,8 +36,8 @@ run: # execution of cmd/insights/main.go .
 # ------------------------------------------------------------------------------
 .PHONY: build
 build: # build the binary and saves it in the bin folder.
-	CGO_ENABLED=0 GOOS=linux go build -o bin/insights cmd/insights/main.go
+	CGO_ENABLED=0 GOOS=linux go build -o bin/http-api cmd/http/main.go
 
 .PHONY: image
-image: # build the docker image with tag booking-req-insights.
-	docker build -t hello-world-server .
+image: # build the docker image with tag booking-insights.
+	docker build -t booking-insights .
