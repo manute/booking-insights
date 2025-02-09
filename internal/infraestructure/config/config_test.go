@@ -1,66 +1,44 @@
 package config_test
 
 import (
-	"booking-req-insights/internal/infraestructure/config"
-	"bytes"
+	"booking-insights/internal/infraestructure/config"
 	"os"
 	"testing"
+	"time"
 )
-
-const dotEnvFileName = ".env"
-
-// You can use testing.T, if you want to test the code without benchmarking
-func setupSuite(t *testing.T) func(t *testing.T) {
-	// testsDir := t.TempDir()
-
-	t.Log("create tmp .env file")
-
-	// envFile, err := os.Create(testsDir + "/" + dotEnvFileName)
-	envFile, err := os.Create(dotEnvFileName)
-	if err != nil {
-		t.Fatalf("got unexpected err: %s", err)
-	}
-
-	// Return a function to teardown the test
-	return func(tb *testing.T) {
-		t.Log("teardown suite")
-		if err = envFile.Close(); err != nil {
-			t.Fatalf("got unexpected err: %s", err)
-		}
-		if err = os.Remove(envFile.Name()); err != nil {
-			t.Fatalf("got unexpected err: %s", err)
-		}
-	}
-}
 
 func Test_LoadEnvs(t *testing.T) {
 
 	tests := []struct {
 		name                   string
 		envs                   map[string]string
+		wantTimeout            time.Duration
 		wantHttPort            int
-		wantHttpReadTimeout    int
-		wantHttpWriteTimeout   int
+		wantHttpReadTimeout    time.Duration
+		wantHttpWriteTimeout   time.Duration
 		wantHttpMaxHeaderBytes int
 	}{
 		{
-			name:                   "should get default envs when not declared",
+			name:                   "efault envs when not declared",
+			wantTimeout:            time.Minute,
 			wantHttPort:            8080,
-			wantHttpReadTimeout:    10,
-			wantHttpWriteTimeout:   10,
+			wantHttpReadTimeout:    10 * time.Second,
+			wantHttpWriteTimeout:   10 * time.Second,
 			wantHttpMaxHeaderBytes: 1048576,
 		},
 		{
 			name: "should match expected envs declared",
 			envs: map[string]string{
-				"HTTP_PORT":              "3000",
-				"HTTP_READ_TIMEOUT_SEC":  "20",
-				"HTTP_WRITE_TIMEOUT_SEC": "15",
-				"HTTP_MAX_HEADER_BYTES":  "123476",
+				"TIMEOUT":               "3m",
+				"HTTP_PORT":             "3000",
+				"HTTP_READ_TIMEOUT":     "20s",
+				"HTTP_WRITE_TIMEOUT":    "15s",
+				"HTTP_MAX_HEADER_BYTES": "123476",
 			},
+			wantTimeout:            3 * time.Minute,
 			wantHttPort:            3000,
-			wantHttpReadTimeout:    20,
-			wantHttpWriteTimeout:   15,
+			wantHttpReadTimeout:    20 * time.Second,
+			wantHttpWriteTimeout:   15 * time.Second,
 			wantHttpMaxHeaderBytes: 123476,
 		},
 	}
@@ -68,30 +46,15 @@ func Test_LoadEnvs(t *testing.T) {
 	for _, tt := range tests {
 
 		t.Run(tt.name, func(t *testing.T) {
-			tearDown := setupSuite(t)
-			defer tearDown(t)
+			os.Clearenv()
 
-			envFile, err := os.OpenFile(dotEnvFileName, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0777)
-			if err != nil {
-				t.Fatalf("got unexpected err: %s", err)
-			}
-
-			// envs := map[string]string{"HTTP_PORT": "3000"}
 			if tt.envs != nil {
-				var envsStr string
 				for k, v := range tt.envs {
-					envsStr += k + "=" + v + "\n"
-
+					os.Setenv(k, v)
 				}
-
-				buff := bytes.NewBufferString(envsStr)
-				if _, err := envFile.Write(buff.Bytes()); err != nil {
-					t.Fatalf("got unexpected err: %s", err)
-				}
-
 			}
 
-			cfg, err := config.LoadEnvParseConfig()
+			cfg, err := config.FromEnvironment()
 			if err != nil {
 				t.Fatalf("got unexpected error: %s ", err.Error())
 			}

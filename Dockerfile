@@ -22,11 +22,8 @@ FROM alpine:edge
 # Set the working directory
 WORKDIR /booking-insights
 
-# Copy the binary from the build stage and the .env file
+# Copy the binary from the build stage
 COPY --from=build /booking-insights .
-
-# TODO: pass the envs
-# COPY --from=build /insights/.env
 
 # Set the timezone and install CA certificates
 RUN apk --no-cache add ca-certificates tzdata

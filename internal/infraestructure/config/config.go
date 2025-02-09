@@ -1,31 +1,23 @@
 package config
 
 import (
-	"fmt"
+	"time"
 
-	"github.com/caarlos0/env/v11"
-	"github.com/joho/godotenv"
+	"github.com/kelseyhightower/envconfig"
 )
 
 // Config with all the envs and other possible configurations/parameters
 type Config struct {
-	HttPort            int `env:"HTTP_PORT" envDefault:"8080"`
-	HttpReadTimeout    int `env:"HTTP_READ_TIMEOUT_SEC" envDefault:"10"`
-	HttpWriteTimeout   int `env:"HTTP_WRITE_TIMEOUT_SEC" envDefault:"10"`
-	HttpMaxHeaderBytes int `env:"HTTP_MAX_HEADER_BYTES" envDefault:"1048576"`
+	Timeout            time.Duration `envconfig:"TIMEOUT" default:"1m"`
+	HttPort            int           `envconfig:"HTTP_PORT" default:"8080"`
+	HttpReadTimeout    time.Duration `envconfig:"HTTP_READ_TIMEOUT" default:"10s"`
+	HttpWriteTimeout   time.Duration `envconfig:"HTTP_WRITE_TIMEOUT" default:"10s"`
+	HttpMaxHeaderBytes int           `envconfig:"HTTP_MAX_HEADER_BYTES" default:"1048576"`
 }
 
-// LoadEnvParseConfig loads and expports the envs from the .env` file,
-// After that, it parses the rnbd inyo the config struct.
-func LoadEnvParseConfig() (Config, error) {
-	if err := godotenv.Load(); err != nil {
-		return Config{}, fmt.Errorf("error loading .env file: %w", err)
-	}
-
-	cfg := Config{}
-	if err := env.Parse(&cfg); err != nil {
-		return Config{}, fmt.Errorf("error parsing ennv variables: %w", err)
-	}
-
-	return cfg, nil
+// FromEnvironment returns specification loaded either from an `.env` file or as environ
+func FromEnvironment() (Config, error) {
+	var c Config
+	err := envconfig.Process("booking-insights", &c)
+	return c, err
 }
