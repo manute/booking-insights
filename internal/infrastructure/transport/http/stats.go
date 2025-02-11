@@ -7,7 +7,7 @@ import (
 )
 
 type ServiceStats interface {
-	ProfitsPerNight(xs []float64) stats.ProfitsDTO
+	ProfitsPerNight(xs []float64) stats.ProfitsPerNightRespDTO
 }
 
 type StatsHandler struct {
