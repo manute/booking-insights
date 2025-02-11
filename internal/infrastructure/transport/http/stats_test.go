@@ -21,7 +21,8 @@ func Test_StatsHandler(t *testing.T) {
 		wantHttpCode int
 	}{
 		{"empty req", "empty_req.json", "empty_req.golden", http.StatusOK},
-		// {"two bookings", "bookings_req_2.json", "bookings_req_2.golden", http.StatusOK},
+		{"two bookings", "bookings_req_2.json", "bookings_req_2.golden", http.StatusOK},
+		{"three bookings", "bookings_req_3.json", "bookings_req_3.golden", http.StatusOK},
 	}
 
 	for _, tt := range tests {
