@@ -15,14 +15,14 @@ import (
 
 func Test_StatsHandler(t *testing.T) {
 	tests := []struct {
-		name         string
-		in           string
-		want         string
-		wantHttpCode int
+		name     string
+		in       string
+		want     string
+		wantCode int
 	}{
-		{"empty req", "empty_req.json", "empty_req.golden", http.StatusOK},
-		{"two bookings", "bookings_req_2.json", "bookings_req_2.golden", http.StatusOK},
-		{"three bookings", "bookings_req_3.json", "bookings_req_3.golden", http.StatusOK},
+		{"empty req", "stats_empty.json", "stats_empty.golden", http.StatusOK},
+		{"two bookings", "stats_two.json", "stats_two.golden", http.StatusOK},
+		{"three bookings", "stats_three.json", "stats_three.golden", http.StatusOK},
 	}
 
 	for _, tt := range tests {
@@ -41,6 +41,10 @@ func Test_StatsHandler(t *testing.T) {
 			res := httptest.NewRecorder()
 			statsHandler.ServeHTTP(res, req)
 
+			if want, got := tt.wantCode, res.Code; want != got {
+				t.Errorf("expected a %d, instead got: %d", want, got)
+			}
+
 			respData, err := io.ReadAll(res.Body)
 			if err != nil {
 				t.Errorf("expected error to be nil got %s", err)
@@ -54,9 +58,6 @@ func Test_StatsHandler(t *testing.T) {
 			g := strings.TrimRight(string(respData), "\n")
 			w := strings.TrimRight(string(respWant), "\n")
 
-			if want, got := tt.wantHttpCode, res.Code; want != got {
-				t.Errorf("expected a %d, instead got: %d", want, got)
-			}
 			if want, got := w, g; strings.Compare(want, got) != 0 {
 				t.Errorf("expected a %s, instead got: %s", want, got)
 			}
