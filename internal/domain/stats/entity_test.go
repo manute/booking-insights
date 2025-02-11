@@ -4,8 +4,7 @@ import (
 	"testing"
 )
 
-func Test_Profits(t *testing.T) {
-
+func Test_ProfitsPerNight(t *testing.T) {
 	tests := []struct {
 		name string
 		in   []float64
@@ -16,7 +15,7 @@ func Test_Profits(t *testing.T) {
 			want: profits{0, 0, 0},
 		},
 		{
-			name: "given emptys",
+			name: "given zero inputs",
 			in:   []float64{0},
 			want: profits{0, 0, 0},
 		},
@@ -27,8 +26,8 @@ func Test_Profits(t *testing.T) {
 		},
 		{
 			name: "given 3 profits",
-			in:   []float64{10, 12.1, 10.80},
-			want: profits{avg: 10.966666666666669, min: 10.0, max: 12.10},
+			in:   []float64{10, 12.1, 10.29},
+			want: profits{avg: 10.796666666666667, min: 10, max: 12.1},
 		},
 	}
 	for _, tt := range tests {

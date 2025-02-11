@@ -38,16 +38,10 @@ func (h *StatsHandler) post(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// TODO: this is domain?
-	var data []float64
-	for _, p := range payload {
-		d := (p.SellingRate * p.Margin / 100) / p.Nights
-		data = append(data, float64(d))
-	}
-
+	data := mapperReq(payload)
 	profits := h.service.ProfitsPerNight(data)
-	res := mapper(profits)
 
+	res := mapperRes(profits)
 	encoder := json.NewEncoder(w)
 	if err := encoder.Encode(&res); err != nil {
 		http.Error(w, "encoding json resp", http.StatusInternalServerError)
@@ -62,7 +56,19 @@ type ProfitsResp struct {
 	Avg float64 `json:"avg"`
 }
 
-func mapper(dto stats.ProfitsDTO) ProfitsResp {
+func mapperReq(pp []statsPayload) []stats.ProfitsPerNightReqDTO {
+	var out []stats.ProfitsPerNightReqDTO
+	for _, p := range pp {
+		out = append(out, stats.ProfitsPerNightReqDTO{
+			SellingRate: float64(p.SellingRate),
+			Margin:      p.Margin,
+			Nights:      p.Nights,
+		})
+	}
+	return out
+}
+
+func mapperRes(dto stats.ProfitsPerNightRespDTO) ProfitsResp {
 	return ProfitsResp{
 		Max: dto.Max,
 		Min: dto.Min,
