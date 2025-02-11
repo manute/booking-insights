@@ -2,20 +2,25 @@ package stats
 
 type Service struct{}
 
-// func (s *Service) ProfitsPerNight(xs []float64) ProfitsPerNightRespDTO {
-func (s *Service) ProfitsPerNight(payload []ProfitsPerNightReqDTO) ProfitsPerNightRespDTO {
-	var data []float64
+func NewService() *Service {
+	svc := &Service{}
+	return svc
+}
 
+// ProfitsPerNight
+func (s *Service) ProfitsPerNight(payload []ProfitsPerNightReqDTO) ProfitsPerNightRespDTO {
+	var profits []float64
 	for _, p := range payload {
 		if p.Margin == 0 || p.Nights == 0 {
-			data = append(data, 0)
+			profits = append(profits, 0)
 			continue
 		}
-		p := (p.SellingRate * float64(p.Margin) / 100) / float64(p.Nights)
-		data = append(data, p)
+
+		profit := (p.SellingRate * float64(p.Margin) / 100) / float64(p.Nights)
+		profits = append(profits, profit)
 	}
 
-	out := newProfit(data)
+	out := newProfit(profits)
 	return ProfitsPerNightRespDTO{
 		Avg: out.avg,
 		Max: out.max,

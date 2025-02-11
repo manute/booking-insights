@@ -9,7 +9,6 @@ import (
 	"os"
 	"os/signal"
 	"syscall"
-	"time"
 )
 
 func main() {
@@ -19,10 +18,8 @@ func main() {
 	if err != nil {
 		log.Fatalf("error loading the config: %s", err.Error())
 	}
-	//
-	ctx, cancel := context.WithTimeout(context.Background(), cfg.Timeout)
-	defer cancel()
 
+	ctx := context.TODO()
 	sigch := make(chan os.Signal, 1)
 	signal.Notify(sigch, syscall.SIGINT, syscall.SIGTERM)
 
@@ -46,8 +43,6 @@ func main() {
 		case s := <-sigch:
 			log.Printf("sgnal %s received", s)
 			return
-		case <-time.Tick(1 * time.Second):
-			log.Printf(".")
 		}
 	}
 }

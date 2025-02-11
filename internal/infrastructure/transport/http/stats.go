@@ -3,18 +3,19 @@ package http
 import (
 	"booking-insights/internal/domain/stats"
 	"encoding/json"
+	"fmt"
 	"net/http"
 )
 
 type ServiceStats interface {
-	ProfitsPerNight(xs []float64) stats.ProfitsPerNightRespDTO
+	ProfitsPerNight(payload []stats.ProfitsPerNightReqDTO) stats.ProfitsPerNightRespDTO
 }
 
 type StatsHandler struct {
-	service stats.Service
+	service ServiceStats
 }
 
-func NewStatsHandler(svc stats.Service) *StatsHandler {
+func NewStatsHandler(svc ServiceStats) *StatsHandler {
 	return &StatsHandler{service: svc}
 }
 
@@ -23,18 +24,17 @@ func (h *StatsHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "only POST method is allowed", http.StatusMethodNotAllowed)
 		return
 	}
-
 	h.post(w, r)
 	return
 }
 
 func (h *StatsHandler) post(w http.ResponseWriter, r *http.Request) {
-
 	decoder := json.NewDecoder(r.Body)
 
 	var payload []statsPayload
 	if err := decoder.Decode(&payload); err != nil {
-		http.Error(w, "decoding json payload", http.StatusBadRequest)
+		err := fmt.Errorf("decoding json payload: %w", err)
+		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 
@@ -45,9 +45,10 @@ func (h *StatsHandler) post(w http.ResponseWriter, r *http.Request) {
 	encoder := json.NewEncoder(w)
 	if err := encoder.Encode(&res); err != nil {
 		http.Error(w, "encoding json resp", http.StatusInternalServerError)
+		err := fmt.Errorf("decoding json payload: %w", err)
+		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
-	w.WriteHeader(http.StatusAccepted)
 }
 
 type ProfitsResp struct {

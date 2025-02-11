@@ -42,7 +42,7 @@ func Test_ServiceProfitsPerNight(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			svc := &stats.Service{}
+			svc := stats.NewService()
 			res := svc.ProfitsPerNight(tt.in)
 			if want, got := tt.want, res; want != got {
 				t.Errorf("expected a %f, instead got: %+v", want, got)

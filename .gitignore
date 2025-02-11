@@ -21,3 +21,4 @@ vendor/
 go.work
 go.work.sum
 /bin/
+/post_json/

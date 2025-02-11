@@ -1,6 +1,7 @@
 package http
 
 import (
+	"booking-insights/internal/domain/stats"
 	"booking-insights/internal/infrastructure/config"
 	"context"
 	"fmt"
@@ -25,8 +26,9 @@ func NewServer(ctx context.Context, cfg config.Config) *http.Server {
 		// },
 	}
 
-	statsendp := StatsHandler{}
-	http.Handle("/stats", &statsendp)
+	svcStats := stats.NewService()
+	statsHandler := NewStatsHandler(svcStats)
+	http.Handle("/stats", statsHandler)
 
 	return server
 }
