@@ -1,33 +1,53 @@
 package main
 
 import (
+	"booking-insights/internal/infrastructure/config"
+	htttptransport "booking-insights/internal/infrastructure/transport/http"
 	"context"
 	"log"
+
 	"os"
+	"os/signal"
+	"syscall"
 	"time"
 )
 
 func main() {
-	var timeout time.Duration = time.Minute
-	var err error
+	log.Println("running cmd/http ..")
 
-	if val, ok := os.LookupEnv("TIMEOUT"); ok && len(val) > 0 {
-		timeout, err = time.ParseDuration(val)
-		if err != nil {
-			log.Fatalf("error parsing timeout: %v", err)
-		}
+	cfg, err := config.FromEnvironment()
+	if err != nil {
+		log.Fatalf("error loading the config: %s", err.Error())
 	}
-
-	ctx, cancel := context.WithTimeout(context.Background(), timeout)
+	//
+	ctx, cancel := context.WithTimeout(context.Background(), cfg.Timeout)
 	defer cancel()
 
+	sigch := make(chan os.Signal, 1)
+	signal.Notify(sigch, syscall.SIGINT, syscall.SIGTERM)
+
+	server := htttptransport.NewServer(ctx, cfg)
+	defer server.Shutdown(ctx)
+
+	// Run our server in a goroutine so that it doesn't block.
+	go func() {
+		log.Println("http server starting...")
+		if err := server.ListenAndServe(); err != nil {
+			log.Fatal(err)
+		}
+	}()
+
+	// running all the time until thecontext is done or an interrypt signal is received
 	for {
 		select {
 		case <-ctx.Done():
-			log.Printf("running ernded at: %s", time.Now())
+			log.Println("ctx done, running ending")
+			return
+		case s := <-sigch:
+			log.Printf("sgnal %s received", s)
 			return
 		case <-time.Tick(1 * time.Second):
-			log.Println(".")
+			log.Printf(".")
 		}
 	}
 }

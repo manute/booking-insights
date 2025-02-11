@@ -20,15 +20,15 @@ fmt: # fmt for all the go files.
 	@test -z $(shell echo $(shell go fmt $(shell go list ./... | grep -v /vendor/)) | tr -d "[:space:]")
 
 .PHONY: test
-test: # run all tests.
+test: # run all tests
 	go test -shuffle=on -count 1 -race ./...
 
 # ------------------------------------------------------------------------------
 # running 
 # ------------------------------------------------------------------------------
-.PHONY: serve
-serve: # execution of cmd/insights/main.go .
-	TIMEOUT=1m go run cmd/http/main.go
+.PHONY: run
+run: # execution of the main of the http-server api
+	go run cmd/http/main.go
 
 
 # ------------------------------------------------------------------------------
