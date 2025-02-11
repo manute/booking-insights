@@ -1,6 +1,5 @@
 package http
 
-// moove to domain
 type statsPayload struct {
 	RequestID   string `json:"request_id"`
 	CheckIn     string `json:"check_in"`
@@ -9,8 +8,8 @@ type statsPayload struct {
 	Margin      int    `json:"margin"`
 }
 
-type Profit struct {
-	Avg float64 `json:"avg_night"`
-	Min float64 `json:"min_night"`
+type statsResp struct {
 	Max float64 `json:"max_night"`
+	Min float64 `json:"min_night"`
+	Avg float64 `json:"avg_night"`
 }

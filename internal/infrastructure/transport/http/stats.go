@@ -51,12 +51,6 @@ func (h *StatsHandler) post(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-type StatsResp struct {
-	Max float64 `json:"max_night"`
-	Min float64 `json:"min_night"`
-	Avg float64 `json:"avg_night"`
-}
-
 func mapperReq(pp []statsPayload) []stats.ProfitsPerNightReqDTO {
 	var out []stats.ProfitsPerNightReqDTO
 	for _, p := range pp {
@@ -69,8 +63,8 @@ func mapperReq(pp []statsPayload) []stats.ProfitsPerNightReqDTO {
 	return out
 }
 
-func mapperRes(dto stats.ProfitsPerNightRespDTO) StatsResp {
-	return StatsResp{
+func mapperRes(dto stats.ProfitsPerNightRespDTO) statsResp {
+	return statsResp{
 		Max: dto.Max,
 		Min: dto.Min,
 		Avg: dto.Avg,
