@@ -8,7 +8,6 @@ import (
 
 // Config with all the envs and other possible configurations/parameters
 type Config struct {
-	Timeout            time.Duration `envconfig:"TIMEOUT" default:"1m"`
 	HttPort            int           `envconfig:"HTTP_PORT" default:"8080"`
 	HttpReadTimeout    time.Duration `envconfig:"HTTP_READ_TIMEOUT" default:"10s"`
 	HttpWriteTimeout   time.Duration `envconfig:"HTTP_WRITE_TIMEOUT" default:"10s"`

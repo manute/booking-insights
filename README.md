@@ -1,32 +1,39 @@
 # booking-insights
 
-Represens the booking's insights for an apartnmnet.
-
-The source of data to calculate the insigths is being retirverd from tje booking request api.
+Represents the booking's insights for an apartnmnet.
 The goal is to make better decisions for renting the apartament.
 
 ## API
 
-### HTTPServer
-This is an http server and it has ttwo endpoints
+[API specification](https://app.swaggerhub.com/apis-docs/BlackfireSFL/BackendChallenge/1.0.1)
 
-    -     o in the folder `cmd/n` and you can run it with the makefile target `run`
-/* TODO: Pass Envs */
+## Running
+For running the app and the http server use the target `run`
 ```sh
 make run 
 ```
+And ths envs are accepted:
+
+- *HTTP_PORT* default:"8080"
+- *HTTP_READ_TIMEOUT* ,default:"10s"
+- *HTTP_WRITE_TIMEOUT* default:"10s"
+- *HTTP_MAX_HEADER_BYTES* default:"1048576"
 
 ## Testing
-For running the tests you can use the target`test`
-/* TODO: differentiate amd implement unit, integration, e2e */
+For running all the tests you can use the target`test`
 
 ```sh
 make test
 ```
 
 ## Building/Developing/Extras
-In the makefile are included more targets to help thew devlopemtn, such as: `image`, `build, ``fmt`.
-You can see all the targets with the `help` target.
-```
+The makefile includes more targets to help the development process, such as: `image`, `build`, `fmt`.
+You can see all of them with the `help` target.
 
-/*TODO: Perforrmamt */
+## TODO
+
+- [] maximize endpoint
+- [] e2e test
+- [] performant
+- [] posibility of running sep. unit and integr. tests
+- [] better logs

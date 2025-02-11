@@ -1,7 +1,7 @@
 package config_test
 
 import (
-	"booking-insights/internal/infraestructure/config"
+	"booking-insights/internal/infrastructure/config"
 	"os"
 	"testing"
 	"time"
@@ -12,15 +12,13 @@ func Test_LoadEnvs(t *testing.T) {
 	tests := []struct {
 		name                   string
 		envs                   map[string]string
-		wantTimeout            time.Duration
 		wantHttPort            int
 		wantHttpReadTimeout    time.Duration
 		wantHttpWriteTimeout   time.Duration
 		wantHttpMaxHeaderBytes int
 	}{
 		{
-			name:                   "efault envs when not declared",
-			wantTimeout:            time.Minute,
+			name:                   "default envs when not declared",
 			wantHttPort:            8080,
 			wantHttpReadTimeout:    10 * time.Second,
 			wantHttpWriteTimeout:   10 * time.Second,
@@ -29,13 +27,11 @@ func Test_LoadEnvs(t *testing.T) {
 		{
 			name: "should match expected envs declared",
 			envs: map[string]string{
-				"TIMEOUT":               "3m",
 				"HTTP_PORT":             "3000",
 				"HTTP_READ_TIMEOUT":     "20s",
 				"HTTP_WRITE_TIMEOUT":    "15s",
 				"HTTP_MAX_HEADER_BYTES": "123476",
 			},
-			wantTimeout:            3 * time.Minute,
 			wantHttPort:            3000,
 			wantHttpReadTimeout:    20 * time.Second,
 			wantHttpWriteTimeout:   15 * time.Second,
