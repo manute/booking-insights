@@ -19,11 +19,6 @@ func NewServer(ctx context.Context, cfg config.Config) *http.Server {
 		BaseContext: func(n net.Listener) context.Context {
 			return ctx
 		},
-
-		// TODO (revisit if got time)
-		// ConnContext: func(connCtx context.Context, c net.Conn) context.Context{
-		// 	return ctx
-		// },
 	}
 
 	svcStats := stats.NewService()

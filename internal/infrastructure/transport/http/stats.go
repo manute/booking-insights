@@ -3,7 +3,6 @@ package http
 import (
 	"booking-insights/internal/domain/stats"
 	"encoding/json"
-	"fmt"
 	"net/http"
 )
 
@@ -20,21 +19,22 @@ func NewStatsHandler(svc ServiceStats) *StatsHandler {
 }
 
 func (h *StatsHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
 	if r.Method != http.MethodPost {
-		http.Error(w, "only POST method is allowed", http.StatusMethodNotAllowed)
+		e := errorResp{"method not accepted, only POST"}
+		JSONError(w, &e, http.StatusMethodNotAllowed)
 		return
 	}
-	h.post(w, r)
+	h.postStats(w, r)
 	return
 }
 
-func (h *StatsHandler) post(w http.ResponseWriter, r *http.Request) {
+func (h *StatsHandler) postStats(w http.ResponseWriter, r *http.Request) {
 	decoder := json.NewDecoder(r.Body)
-
 	var payload []statsPayload
 	if err := decoder.Decode(&payload); err != nil {
-		err := fmt.Errorf("decoding json payload: %w", err)
-		http.Error(w, err.Error(), http.StatusBadRequest)
+		e := errorResp{"decoding json payload: " + err.Error()}
+		JSONError(w, &e, http.StatusMethodNotAllowed)
 		return
 	}
 
@@ -44,9 +44,8 @@ func (h *StatsHandler) post(w http.ResponseWriter, r *http.Request) {
 	res := mapperRes(profits)
 	encoder := json.NewEncoder(w)
 	if err := encoder.Encode(&res); err != nil {
-		http.Error(w, "encoding json resp", http.StatusInternalServerError)
-		err := fmt.Errorf("decoding json payload: %w", err)
-		http.Error(w, err.Error(), http.StatusBadRequest)
+		e := errorResp{"encoding json resp: " + err.Error()}
+		JSONError(w, &e, http.StatusBadRequest)
 		return
 	}
 }
