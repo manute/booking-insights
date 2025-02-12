@@ -24,7 +24,7 @@ type statsResp struct {
 	Avg float64 `json:"avg_night"`
 }
 
-type maximizeResp struct {
+type MaximizeResp struct {
 	ReqIDs      []string `json:"request_ids"`
 	TotalProfit float64  `json:"total_profit"`
 	Max         float64  `json:"max_night"`

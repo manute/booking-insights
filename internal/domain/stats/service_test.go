@@ -51,3 +51,31 @@ func Test_ServiceProfitsPerNight(t *testing.T) {
 		})
 	}
 }
+
+func Test_ServiceMaximize(t *testing.T) {
+	// svc := stats.NewService()
+
+	// 	time.Parse(time.RFC3339,
+	// 		"RFC3339,
+	// 		"
+	// 	payload := []stats.MaximizeReqDTO{
+	// 		{ReqID: "id1",CheckIn: time.}
+	// 	}
+	// 	[
+	// {
+	// "request_id":"bookata_XY123",
+	// "check_in":"2020-01-01",
+	// "nights":5,
+	// "selling_rate":200,
+	// "margin":20
+	// },
+	// {
+	// "request_id":"kayete_PP234",
+	// "check_in":"2020-01-04",
+	// "nights":4,
+	// "selling_rate":156,
+	// "margin":5
+	// }]`
+
+	// svc.Maximize(payload []stats.MaximizeReqDTO)
+}

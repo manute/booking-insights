@@ -63,7 +63,7 @@ func maximize(req []MaximizeReqDTO) (*MaximizeRespDTO, error) {
 		return nil, err
 	}
 
-	res := &MaximizeRespDTO{ReqsID: []string{}, TotalProfit: 0}
+	res := &MaximizeRespDTO{ReqIDs: []string{}, TotalProfit: 0}
 	var profits []float64
 	for id, p := range in {
 		if p.Margin == 0 || p.Nights == 0 {
@@ -75,7 +75,7 @@ func maximize(req []MaximizeReqDTO) (*MaximizeRespDTO, error) {
 		profit := b / float64(p.Nights)
 
 		profits = append(profits, profit)
-		res.ReqsID = append(res.ReqsID, id)
+		res.ReqIDs = append(res.ReqIDs, id)
 		res.TotalProfit += b
 	}
 

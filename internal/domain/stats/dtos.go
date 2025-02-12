@@ -26,7 +26,7 @@ type MaximizeReqDTO struct {
 }
 
 type MaximizeRespDTO struct {
-	ReqsID      []string
+	ReqIDs      []string
 	TotalProfit float64
 	Max         float64
 	Min         float64

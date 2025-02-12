@@ -121,9 +121,9 @@ func mapperMaxReq(pp []statsPayload) []stats.MaximizeReqDTO {
 	return out
 }
 
-func mapperMaxRes(dto stats.MaximizeRespDTO) maximizeResp {
-	return maximizeResp{
-		ReqIDs:      dto.ReqsID,
+func mapperMaxRes(dto stats.MaximizeRespDTO) MaximizeResp {
+	return MaximizeResp{
+		ReqIDs:      dto.ReqIDs,
 		TotalProfit: dto.TotalProfit,
 		Max:         dto.Max,
 		Min:         dto.Min,

@@ -2,6 +2,7 @@ package stats
 
 import (
 	"reflect"
+	"sort"
 	"testing"
 )
 
@@ -56,7 +57,7 @@ func Test_Maximize(t *testing.T) {
 	}
 
 	want := &MaximizeRespDTO{
-		ReqsID:      []string{"bookata_XY123", "acme_AAA"},
+		ReqIDs:      []string{"bookata_XY123", "acme_AAA"},
 		TotalProfit: 88,
 		Max:         12,
 		Min:         8,
@@ -64,6 +65,9 @@ func Test_Maximize(t *testing.T) {
 	}
 
 	// TODO: compare fields -- strings slices are not comparable, could fail for that
+	sort.Strings(got.ReqIDs)
+	sort.Strings(want.ReqIDs)
+
 	if !reflect.DeepEqual(got, want) {
 		t.Errorf("expected %v, instead got: %v", want, got)
 	}
