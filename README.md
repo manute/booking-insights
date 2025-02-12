@@ -31,9 +31,9 @@ The makefile includes more targets to help the development process, such as: `im
 You can see all of them with the `help` target.
 
 ## TODO
-
-- [] maximize endpoint
-- [] e2e test
-- [] performant
-- [] posibility of running sep. unit and integr. tests
-- [] better logs
+- [ ] validate payloads
+- [ ] maximize endpoint
+- [ ] e2e test
+- [ ] performant
+- [ ] posibility of running sep. unit and integr. tests
+- [ ] better logs

@@ -1,6 +1,7 @@
 package stats
 
 import (
+	"reflect"
 	"testing"
 )
 
@@ -39,4 +40,29 @@ func Test_ProfitsPerNight(t *testing.T) {
 
 		})
 	}
+}
+
+func Test_Maximize(t *testing.T) {
+	in := []MaximizeReqDTO{
+		{ReqID: "xyz", CheckIn: "2020-01-01", Nights: 5, SellingRate: 200, Margin: 20},
+		{ReqID: "yja", CheckIn: "2020-01-10", Nights: 4, SellingRate: 160, Margin: 30},
+	}
+
+	got, err := maximize(in)
+	if err != nil {
+		t.Error("not expected error", err)
+	}
+
+	want := &MaximizeRespDTO{
+		ReqsID:      []string{"xyz", "yja"},
+		TotalProfit: 88,
+		Max:         12,
+		Min:         8,
+		Avg:         10,
+	}
+
+	if !reflect.DeepEqual(got, want) {
+		t.Errorf("expected a %v, instead got: %v", want, got)
+	}
+
 }

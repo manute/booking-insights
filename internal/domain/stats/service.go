@@ -27,3 +27,7 @@ func (s *Service) ProfitsPerNight(payload []ProfitsPerNightReqDTO) ProfitsPerNig
 		Min: out.min,
 	}
 }
+
+// func (s *Service) Maximize(payload []MaximizeReqDTO) map[string]MaximizeRespDTO {
+// 	return nil
+// }
