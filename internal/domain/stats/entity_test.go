@@ -63,7 +63,7 @@ func Test_Maximize(t *testing.T) {
 		Avg:         10,
 	}
 
-	// strings slice not comparable
+	// TODO: compare fields -- strings slices are not comparable, could fail for that
 	if !reflect.DeepEqual(got, want) {
 		t.Errorf("expected %v, instead got: %v", want, got)
 	}
