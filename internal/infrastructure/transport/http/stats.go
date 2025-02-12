@@ -8,6 +8,7 @@ import (
 
 type ServiceStats interface {
 	ProfitsPerNight(payload []stats.ProfitsPerNightReqDTO) stats.ProfitsPerNightRespDTO
+	Maximize(payload []stats.MaximizeReqDTO) (stats.MaximizeRespDTO, error)
 }
 
 type StatsHandler struct {
@@ -25,7 +26,16 @@ func (h *StatsHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		JSONError(w, &e, http.StatusMethodNotAllowed)
 		return
 	}
-	h.postStats(w, r)
+
+	path := r.URL.EscapedPath()
+
+	if path == "/stats" {
+		h.postStats(w, r)
+	}
+	if path == "/maximize" {
+		h.postMaximize(w, r)
+	}
+
 	return
 }
 
@@ -34,23 +44,50 @@ func (h *StatsHandler) postStats(w http.ResponseWriter, r *http.Request) {
 	var payload []statsPayload
 	if err := decoder.Decode(&payload); err != nil {
 		e := errorResp{"decoding json payload: " + err.Error()}
-		JSONError(w, &e, http.StatusMethodNotAllowed)
+		JSONError(w, &e, http.StatusBadRequest)
 		return
 	}
 
-	data := mapperReq(payload)
+	data := mapperProfReq(payload)
 	profits := h.service.ProfitsPerNight(data)
 
-	res := mapperRes(profits)
+	res := mapperProfRes(profits)
 	encoder := json.NewEncoder(w)
 	if err := encoder.Encode(&res); err != nil {
 		e := errorResp{"encoding json resp: " + err.Error()}
-		JSONError(w, &e, http.StatusBadRequest)
+		JSONError(w, &e, http.StatusInternalServerError)
 		return
 	}
 }
 
-func mapperReq(pp []statsPayload) []stats.ProfitsPerNightReqDTO {
+func (h *StatsHandler) postMaximize(w http.ResponseWriter, r *http.Request) {
+	decoder := json.NewDecoder(r.Body)
+	var payload []statsPayload
+	if err := decoder.Decode(&payload); err != nil {
+		e := errorResp{"decoding json payload: " + err.Error()}
+		JSONError(w, &e, http.StatusBadRequest)
+		return
+	}
+
+	data := mapperMaxReq(payload)
+	max, err := h.service.Maximize(data)
+	if err != nil {
+		e := errorResp{err.Error()}
+		JSONError(w, &e, http.StatusInternalServerError)
+		return
+	}
+
+	res := mapperMaxRes(max)
+	encoder := json.NewEncoder(w)
+	if err := encoder.Encode(&res); err != nil {
+		e := errorResp{"encoding json resp: " + err.Error()}
+		JSONError(w, &e, http.StatusInternalServerError)
+		return
+	}
+
+}
+
+func mapperProfReq(pp []statsPayload) []stats.ProfitsPerNightReqDTO {
 	var out []stats.ProfitsPerNightReqDTO
 	for _, p := range pp {
 		out = append(out, stats.ProfitsPerNightReqDTO{
@@ -62,10 +99,34 @@ func mapperReq(pp []statsPayload) []stats.ProfitsPerNightReqDTO {
 	return out
 }
 
-func mapperRes(dto stats.ProfitsPerNightRespDTO) statsResp {
+func mapperProfRes(dto stats.ProfitsPerNightRespDTO) statsResp {
 	return statsResp{
 		Max: dto.Max,
 		Min: dto.Min,
 		Avg: dto.Avg,
+	}
+}
+
+func mapperMaxReq(pp []statsPayload) []stats.MaximizeReqDTO {
+	var out []stats.MaximizeReqDTO
+	for _, p := range pp {
+		out = append(out, stats.MaximizeReqDTO{
+			SellingRate: float64(p.SellingRate),
+			Margin:      p.Margin,
+			Nights:      p.Nights,
+			ReqID:       p.RequestID,
+			CheckIn:     p.CheckIn,
+		})
+	}
+	return out
+}
+
+func mapperMaxRes(dto stats.MaximizeRespDTO) maximizeResp {
+	return maximizeResp{
+		ReqIDs:      dto.ReqsID,
+		TotalProfit: dto.TotalProfit,
+		Max:         dto.Max,
+		Min:         dto.Min,
+		Avg:         dto.Avg,
 	}
 }

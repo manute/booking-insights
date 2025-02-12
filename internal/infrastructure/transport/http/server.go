@@ -24,6 +24,7 @@ func NewServer(ctx context.Context, cfg config.Config) *http.Server {
 	svcStats := stats.NewService()
 	statsHandler := NewStatsHandler(svcStats)
 	http.Handle("/stats", statsHandler)
+	http.Handle("/maximize", statsHandler)
 
 	return server
 }

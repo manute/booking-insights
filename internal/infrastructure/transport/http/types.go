@@ -24,6 +24,14 @@ type statsResp struct {
 	Avg float64 `json:"avg_night"`
 }
 
+type maximizeResp struct {
+	ReqIDs      []string `json:"request_ids"`
+	TotalProfit float64  `json:"total_profit"`
+	Max         float64  `json:"max_night"`
+	Min         float64  `json:"min_night"`
+	Avg         float64  `json:"avg_night"`
+}
+
 func newErrorResp(err error) string {
 	return fmt.Sprintf("{\"message\":\"%s\"}", err.Error())
 }

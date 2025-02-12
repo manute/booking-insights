@@ -1,5 +1,9 @@
 package stats
 
+import (
+	"fmt"
+)
+
 type Service struct{}
 
 func NewService() *Service {
@@ -28,6 +32,14 @@ func (s *Service) ProfitsPerNight(payload []ProfitsPerNightReqDTO) ProfitsPerNig
 	}
 }
 
-// func (s *Service) Maximize(payload []MaximizeReqDTO) map[string]MaximizeRespDTO {
-// 	return nil
-// }
+func (s *Service) Maximize(payload []MaximizeReqDTO) (MaximizeRespDTO, error) {
+	resp, err := maximize(payload)
+	if err != nil {
+		return MaximizeRespDTO{}, fmt.Errorf("internal error: %w", err)
+	}
+	if resp == nil {
+		return MaximizeRespDTO{}, fmt.Errorf("internal error: maximize is nil")
+
+	}
+	return *resp, nil
+}

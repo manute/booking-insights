@@ -44,8 +44,10 @@ func Test_ProfitsPerNight(t *testing.T) {
 
 func Test_Maximize(t *testing.T) {
 	in := []MaximizeReqDTO{
-		{ReqID: "xyz", CheckIn: "2020-01-01", Nights: 5, SellingRate: 200, Margin: 20},
-		{ReqID: "yja", CheckIn: "2020-01-10", Nights: 4, SellingRate: 160, Margin: 30},
+		{ReqID: "bookata_XY123", CheckIn: "2020-01-01", Nights: 5, SellingRate: 200, Margin: 20},
+		{ReqID: "kayete_PP234", CheckIn: "2020-01-04", Nights: 4, SellingRate: 156, Margin: 5},
+		{ReqID: "atropote_AA930", CheckIn: "2020-01-01", Nights: 4, SellingRate: 156, Margin: 6},
+		{ReqID: "acme_AAA", CheckIn: "2020-01-10", Nights: 4, SellingRate: 160, Margin: 30},
 	}
 
 	got, err := maximize(in)
@@ -54,15 +56,16 @@ func Test_Maximize(t *testing.T) {
 	}
 
 	want := &MaximizeRespDTO{
-		ReqsID:      []string{"xyz", "yja"},
+		ReqsID:      []string{"bookata_XY123", "acme_AAA"},
 		TotalProfit: 88,
 		Max:         12,
 		Min:         8,
 		Avg:         10,
 	}
 
+	// strings slice not comparable
 	if !reflect.DeepEqual(got, want) {
-		t.Errorf("expected a %v, instead got: %v", want, got)
+		t.Errorf("expected %v, instead got: %v", want, got)
 	}
 
 }

@@ -67,40 +67,53 @@ func toDate(checkIn string, nights int) (time.Time, error) {
 		return time.Now(), err
 	}
 	return d.AddDate(0, 0, nights), nil
+
 }
 
 // areInTime
 // TODO: refactor to have less repetitive code and better reading
 func areInTime(in []MaximizeReqDTO) (map[string]MaximizeReqDTO, error) {
 	intime := make(map[string]MaximizeReqDTO)
+	avoid := make(map[string]interface{})
 	for _, p := range in {
 		pcheckin, err := toDate(p.CheckIn, 0)
 		if err != nil {
 			return nil, err
 		}
-		pcheckout, err := toDate(p.CheckIn, p.Nights)
-		if err != nil {
-			return nil, err
+		pcheckout := pcheckin.Add(time.Duration(p.Nights) * (24 * time.Hour))
+
+		if _, ok := avoid[p.ReqID]; ok {
+			continue
 		}
 
 		for _, j := range in {
+			if j.ReqID == p.ReqID {
+				continue
+			}
+
+			if _, ok := avoid[j.ReqID]; ok {
+				continue
+			}
+
 			jcheckin, err := toDate(j.CheckIn, 0)
 			if err != nil {
 				return nil, err
 			}
+			jcheckout := jcheckin.Add(time.Duration(j.Nights) * (24 * time.Hour))
 
-			jcheckout, err := toDate(j.CheckIn, j.Nights)
-			if err != nil {
-				return nil, err
-			}
+			i := pcheckin.Sub(jcheckin).Abs().Hours()
+			o := pcheckout.Sub(jcheckout).Abs().Hours()
+			r := i - o
 
-			if pcheckin.Compare(jcheckin) != 0 || pcheckout.Compare(jcheckout) != 0 {
+			if r >= 24 && i > 48 && o > 48 {
+				if _, ok := intime[p.ReqID]; !ok {
+					intime[p.ReqID] = p
+				}
 				continue
 			}
 
-			// is in time
-			if _, ok := intime[p.ReqID]; !ok {
-				intime[p.ReqID] = p
+			if _, ok := avoid[j.ReqID]; !ok {
+				avoid[j.ReqID] = struct{}{}
 			}
 		}
 
