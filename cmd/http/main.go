@@ -19,7 +19,8 @@ func main() {
 		log.Fatalf("error loading the config: %s", err.Error())
 	}
 
-	ctx := context.TODO()
+	ctx := context.Background()
+
 	sigch := make(chan os.Signal, 1)
 	signal.Notify(sigch, syscall.SIGINT, syscall.SIGTERM)
 
@@ -28,7 +29,7 @@ func main() {
 
 	// Run our server in a goroutine so that it doesn't block.
 	go func() {
-		log.Println("http server starting...")
+		log.Printf("http server starting, port: %d ..\n", cfg.HttPort)
 		if err := server.ListenAndServe(); err != nil {
 			log.Fatal(err)
 		}
