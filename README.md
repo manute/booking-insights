@@ -1,4 +1,6 @@
-# booking-insights
+# booking-insights- 
+### This is a challenge for an event - not for a real use-case
+### It is an DDD training challenge, not a pure DDD on my side and some funcs todo better
 
 Represents the booking's insights for an apartnmnet.
 The goal is to make better decisions for renting the apartament.
